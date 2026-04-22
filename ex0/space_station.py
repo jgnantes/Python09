@@ -11,8 +11,8 @@ class SpaceStation(BaseModel):
     power_level: float = Field(ge=0, le=100)
     oxygen_level: float = Field(ge=0, le=100)
     last_maintenance: datetime
-    is_operational: bool = True
-    notes: Optional[str] = Field(default=None, min_length=0, max_length=200)
+    is_operational: bool = Field(default=True)
+    notes: Optional[str] = Field(default=None, max_length=200)
 
 
 if __name__ == "__main__":
@@ -44,7 +44,7 @@ if __name__ == "__main__":
             station_id="ISS001",
             name="International Space Station",
             crew_size=21,
-            power_level=85.5,
+            power_level=101,
             oxygen_level=92.3,
             last_maintenance=datetime.now(),
         )
