@@ -70,7 +70,7 @@ if __name__ == "__main__":
         message_received="Greetings from Zeta Reticuli",
     )
     print("Alien Contact Log Validation")
-    print("======================================")
+    print("\n======================================")
     print("Valid contact report:")
     print(f"ID: {ac1.contact_id}")
     print(f"Type: {ac1.contact_type.name}")
@@ -94,4 +94,5 @@ if __name__ == "__main__":
             message_received=""
         )
     except ValidationError as e:
-        print(e)
+        for error in e.errors():
+            print(error["msg"])

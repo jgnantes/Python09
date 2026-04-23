@@ -49,4 +49,5 @@ if __name__ == "__main__":
             last_maintenance=datetime.now(),
         )
     except ValidationError as e:
-        print(e)
+        for error in e.errors():
+            print(error["msg"])
