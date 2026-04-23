@@ -90,8 +90,8 @@ if __name__ == "__main__":
             location="sei la meo",
             signal_strength=8.5,
             duration_minutes=45,
-            witness_count=3,
-            message_received=" "
+            witness_count=2,
+            message_received=""
         )
     except ValidationError as e:
         print(e)
