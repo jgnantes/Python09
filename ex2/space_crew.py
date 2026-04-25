@@ -55,7 +55,7 @@ class SpaceMission(BaseModel):
     def validate_crew_size(self):
         """ """
         if self.duration_days > 365:
-            experienced_crew: int = 0
+            experienced_crew = 0
             for member in self.crew:
                 if member.years_experience >= 5:
                     experienced_crew += 1
@@ -133,7 +133,7 @@ if __name__ == "__main__":
         name="ElesTa Bizoiando Noisda Silva",
         rank=Rank(1),
         age=18,
-        specialization="ctt c aliens",
+        specialization="python i guess",
         years_experience=40
     )
 
@@ -141,14 +141,23 @@ if __name__ == "__main__":
     print("Expected validation error:")
     try:
         mission_1 = SpaceMission(
-        mission_id="M2024_MARS",
-        mission_name="Mars Colony Establishment",
-        destination="Mars",
-        budget_millions=2500.0,
-        launch_time=datetime.now(),
-        duration_days=900,
-        crew=[joao, john, alice]
+            mission_id="M2024_MARS",
+            mission_name="Mars Colony Establishment",
+            destination="Mars",
+            budget_millions=2500.0,
+            launch_time=datetime.now(),
+            duration_days=900,
+            crew=[joao, john, alice]
         )
     except ValidationError as e:
-        for error in e.errors():
-            print(error["msg"])
+        try:
+            if len(e.errors()) == 1:
+                print("1 error found!")
+            else:
+                print(f"{len(e.errors())} errors found:")
+            for error in e.errors():
+                arg = error['loc'][0]
+                print(f"In '{arg}': {error['msg']}")
+        except IndexError:
+            for error in e.errors():
+                print(f"Model validation error: {error['msg']}")

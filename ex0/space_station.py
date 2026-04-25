@@ -49,5 +49,10 @@ if __name__ == "__main__":
             last_maintenance=datetime.now(),
         )
     except ValidationError as e:
+        if len(e.errors()) == 1:
+            print("1 error found!")
+        else:
+            print(f"{len(e.errors())} errors found:")
         for error in e.errors():
-            print(error["msg"])
+            arg = error['loc'][0]
+            print(f"In '{arg}': {error['msg']}")

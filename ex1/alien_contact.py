@@ -1,7 +1,8 @@
 from enum import Enum
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import Optional
 from pydantic import BaseModel, Field, ValidationError, model_validator
+
 
 class ContactType(Enum):
     """ """
@@ -21,7 +22,7 @@ class AlienContact(BaseModel):
     duration_minutes: int = Field(ge=1, le=1440)
     witness_count: int = Field(ge=1, le=100)
     message_received: Optional[str] = Field(default=None, max_length=200)
-    is_verified: bool =  Field(default=False)
+    is_verified: bool = Field(default=False)
 
     @model_validator(mode='after')
     def validate_id(self):
@@ -33,16 +34,20 @@ class AlienContact(BaseModel):
     @model_validator(mode='after')
     def validate_physical(self):
         """ """
-        if (self.contact_type == ContactType.physical
-        and not self.is_verified):
+        if (
+            self.contact_type == ContactType.physical
+            and not self.is_verified
+        ):
             raise ValueError("Physical contacts must be verified")
         return self
 
     @model_validator(mode='after')
     def validate_telepathic(self):
         """ """
-        if (self.contact_type == ContactType.telepathic
-        and self.witness_count < 3):
+        if (
+            self.contact_type == ContactType.telepathic
+            and self.witness_count < 3
+        ):
             raise ValueError(
                 "Telepathic contacts must have at least 3 witnesses")
         return self
@@ -50,9 +55,13 @@ class AlienContact(BaseModel):
     @model_validator(mode='after')
     def validate_strong_signal_messages(self):
         """ """
-        if (self.signal_strength > 7.0
-        and (self.message_received is None 
-        or len(self.message_received) == 0)):
+        if (
+            self.signal_strength > 7.0
+            and (
+                self.message_received is None
+                or len(self.message_received) == 0
+            )
+        ):
             raise ValueError(
                 "Contacts w/ Signal Strength above 7 must contain a message")
         return self
@@ -60,8 +69,8 @@ class AlienContact(BaseModel):
 
 if __name__ == "__main__":
     ac1 = AlienContact(
-        contact_id= "AC_2024_001",
-        timestamp = datetime.now(),
+        contact_id="AC_2024_001",
+        timestamp=datetime.now(),
         contact_type=ContactType(1),
         location="Area 51, Nevada",
         signal_strength=8.5,
@@ -84,8 +93,8 @@ if __name__ == "__main__":
     print("Expected validation error:")
     try:
         ac1 = AlienContact(
-            contact_id= "AC_2024_001",
-            timestamp = datetime.now(),
+            contact_id="AC_2024_001",
+            timestamp=datetime.now(),
             contact_type=ContactType(4),
             location="sei la meo",
             signal_strength=8.5,
@@ -94,5 +103,14 @@ if __name__ == "__main__":
             message_received=""
         )
     except ValidationError as e:
-        for error in e.errors():
-            print(error["msg"])
+        try:
+            if len(e.errors()) == 1:
+                print("1 error found!")
+            else:
+                print(f"{len(e.errors())} errors found:")
+            for error in e.errors():
+                arg = error['loc'][0]
+                print(f"In '{arg}': {error['msg']}")
+        except IndexError:
+            for error in e.errors():
+                print(f"Model validation error: {error['msg']}")
